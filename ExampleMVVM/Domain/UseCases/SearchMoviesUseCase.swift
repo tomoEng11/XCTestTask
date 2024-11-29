@@ -22,6 +22,7 @@ final class DefaultSearchMoviesUseCase: SearchMoviesUseCase {
         self.moviesQueriesRepository = moviesQueriesRepository
     }
 
+    // cached: 検索履歴(MoviesPage)
     func execute(
         requestValue: SearchMoviesUseCaseRequestValue,
         cached: @escaping (MoviesPage) -> Void,
