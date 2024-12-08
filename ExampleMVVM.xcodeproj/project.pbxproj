@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -234,6 +234,20 @@
 		FC7408192165574400FE52A5 /* MovieQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuery.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BB5FEAD22CFC05510095261D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"MoviesPage1+Stub.swift",
+			);
+			target = 1FA53388201E1FDE00747E55 /* ExampleMVVM */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		BB5FEACA2CFC04210095261D /* Stub */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BB5FEAD22CFC05510095261D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Stub; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		1F02DE2F22F8507500E40C3A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -371,6 +385,7 @@
 		1F9034CB2307138400DEA4BD /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				BB5FEACA2CFC04210095261D /* Stub */,
 				1F9034CC230713A600DEA4BD /* Network */,
 			);
 			name = Infrastructure;
@@ -747,8 +762,8 @@
 		1FE49D98230AEB2C00D1D42E /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				1FE49D83230AA7C200D1D42E /* MoviesListViewModel.swift */,
 				1FFF1AD4243B966600937EE4 /* MoviesListItemViewModel.swift */,
+				1FE49D83230AA7C200D1D42E /* MoviesListViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -915,6 +930,9 @@
 			);
 			dependencies = (
 				1FA5339F201E1FDE00747E55 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				BB5FEACA2CFC04210095261D /* Stub */,
 			);
 			name = ExampleMVVMTests;
 			productName = CodeChallengeTests;
