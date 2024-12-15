@@ -1,5 +1,6 @@
 import XCTest
 
+
 class NetworkServiceTests: XCTestCase {
     
     private struct EndpointMock: Requestable {
@@ -32,17 +33,43 @@ class NetworkServiceTests: XCTestCase {
 
     func test_whenMockDataPassed_shouldReturnProperResponse() {
         // モックデータが渡されたときに、DefaultNetworkService がそのデータを正しく返すかをテストしてください。
+
+        let mockHTTPResponse = HTTPURLResponse(url: URL(string: "https://mock.test.com")!, statusCode: 200, httpVersion: nil, headerFields: [:])
+        let mockData = mockMoviesPage.data(using: .utf8)!
+        let mockSessionManager = NetworkSessionManagerMock(response: mockHTTPResponse, data: mockData , error: nil)
+
+        let sut = DefaultNetworkService(config: NetworkConfigurableMock(), sessionManager: mockSessionManager)
+
+        let expectation = expectation(description: "正しい型が返ってきませんでした")
+
+        _ = sut.request(endpoint: EndpointMock(path: "http://mock.test.com", method: .get)) { result in
+            switch result {
+            case .success(let response):
+                // TODO: assert
+                XCTAssertEqual(response, mockData)
+                expectation.fulfill()
+            case .failure:
+                XCTFail()
+            }
+        }
+        wait(for: [expectation], timeout: 3)
     }
-    
+
+
     func test_whenErrorWithNSURLErrorCancelledReturned_shouldReturnCancelledError() {
         //given
         let config = NetworkConfigurableMock()
         var completionCallsCount = 0
         
         let cancelledError = NSError(domain: "network", code: NSURLErrorCancelled, userInfo: nil)
-        let sut = DefaultNetworkService(config: config, sessionManager: NetworkSessionManagerMock(response: nil,
-                                                                                                  data: nil,
-                                                                                                  error: cancelledError as Error))
+        let sut = DefaultNetworkService(
+            config: config,
+            sessionManager: NetworkSessionManagerMock(
+                response: nil,
+                data: nil,
+                error: cancelledError as Error)
+        )
+
         //when
         _ = sut.request(endpoint: EndpointMock(path: "http://mock.test.com", method: .get)) { result in
             do {
@@ -63,18 +90,61 @@ class NetworkServiceTests: XCTestCase {
 
     func test_whenStatusCodeEqualOrAbove400_shouldReturnhasStatusCodeError() {
         // ステータスコードが 400 以上の場合に、NetworkError.error が返され、正しいステータスコードを持っていることをテストしてください。
+        let config = NetworkConfigurableMock()
+
+        let cancelledError = NSError(domain: "network", code: 400, userInfo: nil)
+
+        let httpsResponseMock = HTTPURLResponse(url: URL(string: "http://mock.test.com")!, statusCode: 400, httpVersion: nil, headerFields: nil)!
+
+        let sut = DefaultNetworkService(
+            config: config,
+            sessionManager: NetworkSessionManagerMock(
+                response: httpsResponseMock,
+                data: nil,
+                error: cancelledError as Error)
+        )
+
+        let expectation = expectation(description: "requestが失敗した時のStatusCodeが一致しません")
+
+        _ = sut.request(endpoint: EndpointMock(path: "http://mock.test.com", method: .get)) { result in
+            do {
+                _ = try result.get()
+                XCTFail("Should not happen")
+            } catch let error as NetworkError { // NetworkErrorにキャスト
+                switch error {
+                case let .error(statusCode, _): // statusCodeを取得
+                    XCTAssertTrue(statusCode >= 400)
+                    expectation.fulfill()
+                case .notConnected:
+                    XCTFail("Not connected error should not happen")
+                case .cancelled:
+                    XCTFail("Cancelled error should not happen")
+                case .generic(let underlyingError):
+                    XCTFail("Generic error occurred: \(underlyingError)")
+                case .urlGeneration:
+                    XCTFail("URL generation error should not happen")
+                }
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+        wait(for: [expectation], timeout: 3)
     }
-    
+
     func test_whenErrorWithNSURLErrorNotConnectedToInternetReturned_shouldReturnNotConnectedError() {
         //given
         let config = NetworkConfigurableMock()
         var completionCallsCount = 0
         
         let error = NSError(domain: "network", code: NSURLErrorNotConnectedToInternet, userInfo: nil)
-        let sut = DefaultNetworkService(config: config, sessionManager: NetworkSessionManagerMock(response: nil,
-                                                                                                  data: nil,
-                                                                                                  error: error as Error))
-        
+        let sut = DefaultNetworkService(
+            config: config,
+            sessionManager: NetworkSessionManagerMock(
+                response: nil,
+                data: nil,
+                error: error as Error)
+        )
+
         //when
         _ = sut.request(endpoint: EndpointMock(path: "http://mock.test.com", method: .get)) { result in
             do {
@@ -95,6 +165,31 @@ class NetworkServiceTests: XCTestCase {
     
     func test_whenhasStatusCodeUsedWithWrongError_shouldReturnFalse() {
         // NetworkError の hasStatusCode メソッドが、異なるエラータイプで false を返すことをテストしてください。
+
+        let mockResponse = HTTPURLResponse(url: URL(string: "http://mock.test.com")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        let error = NSError(domain: "network", code: NSURLErrorNotConnectedToInternet, userInfo: nil)
+        let expectation = expectation(description: "")
+
+        let config = NetworkConfigurableMock()
+        let sut = DefaultNetworkService(
+            config: config,
+            sessionManager: NetworkSessionManagerMock(
+                response: mockResponse,
+                data: nil,
+                error: error)
+        )
+        _ = sut.request(endpoint: EndpointMock(path: "http://mock.test.com", method: .get)) { result in
+            do {
+                _ = try result.get()
+                XCTFail("想定外: requestが成功している")
+            } catch let error as NetworkError{
+                XCTAssertFalse(error.hasStatusCode(300))
+                expectation.fulfill()
+            } catch {
+                XCTFail("想定外: NetworkError以外が発生している。")
+            }
+        }
+        wait(for: [expectation], timeout: 3)
     }
 
     func test_whenhasStatusCodeUsed_shouldReturnCorrectStatusCode_() {
@@ -113,10 +208,14 @@ class NetworkServiceTests: XCTestCase {
         
         let error = NSError(domain: "network", code: NSURLErrorNotConnectedToInternet, userInfo: nil)
         let networkErrorLogger = NetworkErrorLoggerMock()
-        let sut = DefaultNetworkService(config: config, sessionManager: NetworkSessionManagerMock(response: nil,
-                                                                                                  data: nil,
-                                                                                                  error: error as Error),
-                                        logger: networkErrorLogger)
+        let sut = DefaultNetworkService(
+            config: config,
+            sessionManager: NetworkSessionManagerMock(
+                response: nil,
+                data: nil,
+                error: error as Error),
+            logger: networkErrorLogger
+        )
         //when
         _ = sut.request(endpoint: EndpointMock(path: "http://mock.test.com", method: .get)) { result in
             do {
