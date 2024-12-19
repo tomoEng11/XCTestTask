@@ -12,7 +12,7 @@ final class DataTransferDispatchQueueMock: DataTransferDispatchQueue {
 
 class DataTransferServiceTests: XCTestCase {
     
-    private enum DataTransferErrorMock: Error {
+    private enum DataTransferErrorMock: Error, Equatable {
         case someError
     }
     
@@ -51,8 +51,42 @@ class DataTransferServiceTests: XCTestCase {
     
     func test_whenInvalidResponse_shouldNotDecodeObject() {
         // 無効なレスポンスデータを受け取った場合に、デコードが失敗することをテストしてください。
+
+        let mock = NetworkServiceMock()
+        let responseData = #"{"nam": "Hello"}"#.data(using: .utf8)
+        mock.data = responseData
+        let mockError = DataTransferErrorMock.someError
+        mock.error = mockError
+        let expectation = expectation(description: "無効なレスポンスデータを受け取った場合に、デコードが失敗することが確認できませんでした")
+        let sut = DefaultDataTransferService(with: mock)
+        _ = sut.request(
+            with: Endpoint<MockModel>(path: "http://mock.endpoint.com",method: .get),
+            completion: { result in
+                do {
+                    _ = try result.get()
+                    XCTFail("想定外:正しいResponseが返ってきている")
+                } catch {
+                    switch error {
+                    case DataTransferError.parsing(let error):
+                        XCTAssertEqual(error as! DataTransferError, mockError)
+                        expectation.fulfill()
+                        return
+                    case DataTransferError.noResponse:
+                        return
+                    case DataTransferError.networkFailure(let error):
+                        return
+                    case DataTransferError.resolvedNetworkFailure(let error):
+                        return
+                    default:
+                        break
+                    }
+                }
+            })
+
+        wait(for: [expectation], timeout: 3)
+
     }
-    
+
     func test_whenBadRequestReceived_shouldRethrowNetworkError() {
         // ステータスコードが 400 以上（この場合は 500）でレスポンスが返された場合に、適切なネットワークエラーが発生することをテストしてください。
     }

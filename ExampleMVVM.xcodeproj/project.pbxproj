@@ -110,6 +110,7 @@
 		6C0F72E229CF0F5B0005020A /* DispatchQueueType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0F72E129CF0F5A0005020A /* DispatchQueueType.swift */; };
 		6C0F72E329CF115F0005020A /* DispatchQueueType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0F72E129CF0F5A0005020A /* DispatchQueueType.swift */; };
 		6C0F72E629CF12930005020A /* DispatchQueueTypeMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0F72E429CF12180005020A /* DispatchQueueTypeMock.swift */; };
+		BB7167312D0EA046002749FF /* NetworkServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB7167302D0EA046002749FF /* NetworkServiceMock.swift */; };
 		BBC7C7F12CF86D76001D7DF1 /* MoviesPage+Stub.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC7C7F02CF86D76001D7DF1 /* MoviesPage+Stub.swift */; };
 		BBC7C7F32CF86E46001D7DF1 /* MoviesRepositoryMockError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBC7C7F22CF86E46001D7DF1 /* MoviesRepositoryMockError.swift */; };
 		BBFA0FDC2CF1FAA4001AB1E8 /* MoviesRepositoryMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFA0FDB2CF1FAA4001AB1E8 /* MoviesRepositoryMock.swift */; };
@@ -225,6 +226,7 @@
 		1FFFC83D221B02BA007D99D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ExampleMVVMTests/Info.plist; sourceTree = SOURCE_ROOT; };
 		6C0F72E129CF0F5A0005020A /* DispatchQueueType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchQueueType.swift; sourceTree = "<group>"; };
 		6C0F72E429CF12180005020A /* DispatchQueueTypeMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispatchQueueTypeMock.swift; sourceTree = "<group>"; };
+		BB7167302D0EA046002749FF /* NetworkServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceMock.swift; sourceTree = "<group>"; };
 		BBC7C7F02CF86D76001D7DF1 /* MoviesPage+Stub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MoviesPage+Stub.swift"; sourceTree = "<group>"; };
 		BBC7C7F22CF86E46001D7DF1 /* MoviesRepositoryMockError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesRepositoryMockError.swift; sourceTree = "<group>"; };
 		BBFA0FDB2CF1FAA4001AB1E8 /* MoviesRepositoryMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesRepositoryMock.swift; sourceTree = "<group>"; };
@@ -407,6 +409,7 @@
 			children = (
 				1F9034D0230714B900DEA4BD /* NetworkConfigurableMock.swift */,
 				1F9034D22307161D00DEA4BD /* NetworkSessionManagerMock.swift */,
+				BB7167302D0EA046002749FF /* NetworkServiceMock.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -1133,6 +1136,7 @@
 				BBC7C7F32CF86E46001D7DF1 /* MoviesRepositoryMockError.swift in Sources */,
 				1F474F2F22356C7F0092DB4B /* PosterImagesRepository.swift in Sources */,
 				1FE49D9D230AEC5D00D1D42E /* MoviesQueryListViewModel.swift in Sources */,
+				BB7167312D0EA046002749FF /* NetworkServiceMock.swift in Sources */,
 				1F474F2A22356C7F0092DB4B /* Movie.swift in Sources */,
 				1F90353723076B8A00DEA4BD /* MovieDetailsViewModelTests.swift in Sources */,
 				1F474F2822356C7F0092DB4B /* Cancellable.swift in Sources */,
